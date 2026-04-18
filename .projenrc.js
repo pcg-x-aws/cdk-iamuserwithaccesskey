@@ -1,4 +1,5 @@
 const { awscdk, javascript, github } = require('projen');
+const { YamlFile } = require('projen/lib/yaml');
 const project = new awscdk.AwsCdkConstructLibrary({
   packageManager: javascript.NodePackageManager.NPM,
   author: 'Markus Ellers',
@@ -31,12 +32,6 @@ const project = new awscdk.AwsCdkConstructLibrary({
       },
     },
   },
-  depsUpgradeOptions: {
-    ignoreProjen: false,
-    workflowOptions: {
-      schedule: javascript.UpgradeDependenciesSchedule.WEEKLY,
-    },
-  },
   buildWorkflowOptions: {
     // Use frozen lockfile install (npm ci) on PR builds; keep package-lock.json authoritative
     mutableInstall: false,
@@ -49,10 +44,44 @@ const project = new awscdk.AwsCdkConstructLibrary({
   gitignore: ['.DS_Store', '.idea', '.vscode'],
   docgen: true,
   autoApproveUpgrades: true,
-  autoApproveOptions: { allowedUsernames: ['inno-projen[bot]', 'inno-projen'] },
+  autoApproveOptions: {
+    allowedUsernames: ['inno-projen[bot]', 'inno-projen', 'dependabot[bot]'],
+  },
   autoApproveProjenUpgrades: true,
-  depsUpgrade: true,
+  // Dependabot replaces projen upgrade workflows (mutually exclusive)
+  depsUpgrade: false,
+  dependabot: false,
   renovatebot: false,
+});
+
+// Two release lines: Dependabot opens PRs against each branch (lockfile-only; package.json is projen-owned)
+new YamlFile(project, '.github/dependabot.yml', {
+  committed: true,
+  obj: {
+    version: 2,
+    updates: [
+      {
+        'package-ecosystem': 'npm',
+        'directory': '/',
+        'versioning-strategy': 'lockfile-only',
+        'schedule': { interval: 'weekly' },
+        'target-branch': 'main',
+        'labels': ['auto-approve'],
+        'open-pull-requests-limit': 5,
+        'ignore': [{ 'dependency-name': 'projen' }],
+      },
+      {
+        'package-ecosystem': 'npm',
+        'directory': '/',
+        'versioning-strategy': 'lockfile-only',
+        'schedule': { interval: 'weekly' },
+        'target-branch': 'feature/majorVersion2',
+        'labels': ['auto-approve'],
+        'open-pull-requests-limit': 5,
+        'ignore': [{ 'dependency-name': 'projen' }],
+      },
+    ],
+  },
 });
 
 // Newer versions satisfy npm peer resolution (eslint 9, jsii-rosetta ~5.9)

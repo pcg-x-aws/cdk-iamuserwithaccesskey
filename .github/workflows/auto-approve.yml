@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    if: contains(github.event.pull_request.labels.*.name, 'auto-approve') && (github.event.pull_request.user.login == 'inno-projen[bot]' || github.event.pull_request.user.login == 'inno-projen')
+    if: contains(github.event.pull_request.labels.*.name, 'auto-approve') && (github.event.pull_request.user.login == 'inno-projen[bot]' || github.event.pull_request.user.login == 'inno-projen' || github.event.pull_request.user.login == 'dependabot[bot]')
     steps:
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
