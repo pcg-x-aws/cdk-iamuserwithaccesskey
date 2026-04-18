@@ -41,6 +41,10 @@ const project = new awscdk.AwsCdkConstructLibrary({
     // Use frozen lockfile install (npm ci) on PR builds; keep package-lock.json authoritative
     mutableInstall: false,
   },
+  // Jest 27 pulls vulnerable jsdom/http-proxy-agent; 29+ clears npm audit (use ^29.0 — projen pins ts-jest to same range)
+  jestOptions: {
+    jestVersion: '^29.0.0',
+  },
   devDeps: ['aws-cdk-lib', 'constructs', 'awslint'],
   gitignore: ['.DS_Store', '.idea', '.vscode'],
   docgen: true,
