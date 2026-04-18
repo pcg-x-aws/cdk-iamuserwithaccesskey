@@ -23,9 +23,14 @@ When using projen add the following to your .projenrc:
 ## npm Package Installation
 
 ```bash
-yarn add --dev @innovationson/cdk-iamuserwithaccesskey
-# or
 npm install @innovationson/cdk-iamuserwithaccesskey --save-dev
+```
+
+### Contributing (this repository)
+
+```bash
+npm ci
+npm run build
 ```
 
 ## Usage

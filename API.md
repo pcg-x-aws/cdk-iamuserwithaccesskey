@@ -47,6 +47,7 @@ new IamUserWithAccessKey(scope: Construct, id: string, props?: IamUserWithAccess
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.with">with</a></code> | Applies one or more mixins to this construct. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.applyRemovalPolicy">applyRemovalPolicy</a></code> | Apply the given removal policy to this resource. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.addManagedPolicy">addManagedPolicy</a></code> | Attaches a managed policy to the user. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.addToGroup">addToGroup</a></code> | Adds this user to a group. |
@@ -63,6 +64,25 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+---
 
 ##### `applyRemovalPolicy` <a name="applyRemovalPolicy" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.applyRemovalPolicy"></a>
 
@@ -163,6 +183,7 @@ Attaches a policy to this user.
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isOwnedResource">isOwnedResource</a></code> | Returns true if the construct was created by CDK, and false otherwise. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isResource">isResource</a></code> | Check whether the given construct is a Resource. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.fromUserArn">fromUserArn</a></code> | Import an existing user given a user ARN. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.fromUserAttributes">fromUserAttributes</a></code> | Import an existing user given user attributes. |
@@ -170,7 +191,7 @@ Attaches a policy to this user.
 
 ---
 
-##### ~~`isConstruct`~~ <a name="isConstruct" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isConstruct"></a>
+##### `isConstruct` <a name="isConstruct" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isConstruct"></a>
 
 ```typescript
 import { IamUserWithAccessKey } from '@innovationson/cdk-iamuserwithaccesskey'
@@ -180,11 +201,41 @@ IamUserWithAccessKey.isConstruct(x: any)
 
 Checks if `x` is a construct.
 
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
 ###### `x`<sup>Required</sup> <a name="x" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isConstruct.parameter.x"></a>
 
 - *Type:* any
 
 Any object.
+
+---
+
+##### `isOwnedResource` <a name="isOwnedResource" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isOwnedResource"></a>
+
+```typescript
+import { IamUserWithAccessKey } from '@innovationson/cdk-iamuserwithaccesskey'
+
+IamUserWithAccessKey.isOwnedResource(construct: IConstruct)
+```
+
+Returns true if the construct was created by CDK, and false otherwise.
+
+###### `construct`<sup>Required</sup> <a name="construct" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.isOwnedResource.parameter.construct"></a>
+
+- *Type:* constructs.IConstruct
 
 ---
 
@@ -317,13 +368,14 @@ the username of the existing user to import.
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.env">env</a></code> | <code>aws-cdk-lib.ResourceEnvironment</code> | The environment this resource belongs to. |
+| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.env">env</a></code> | <code>aws-cdk-lib.interfaces.ResourceEnvironment</code> | The environment this resource belongs to. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.stack">stack</a></code> | <code>aws-cdk-lib.Stack</code> | The stack in which this resource is defined. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.assumeRoleAction">assumeRoleAction</a></code> | <code>string</code> | When this Principal is used in an AssumeRole policy, the action to use. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.grantPrincipal">grantPrincipal</a></code> | <code>aws-cdk-lib.aws_iam.IPrincipal</code> | The principal to grant permissions to. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.policyFragment">policyFragment</a></code> | <code>aws-cdk-lib.aws_iam.PrincipalPolicyFragment</code> | Return the policy fragment that identifies this principal in a Policy. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.userArn">userArn</a></code> | <code>string</code> | An attribute that represents the user's ARN. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.userName">userName</a></code> | <code>string</code> | An attribute that represents the user name. |
+| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.userRef">userRef</a></code> | <code>aws-cdk-lib.interfaces.aws_iam.UserReference</code> | A reference to a User resource. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.permissionsBoundary">permissionsBoundary</a></code> | <code>aws-cdk-lib.aws_iam.IManagedPolicy</code> | Returns the permissions boundary attached  to this user. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.principalAccount">principalAccount</a></code> | <code>string</code> | The AWS account ID of this principal. |
 | <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.accessKey">accessKey</a></code> | <code>aws-cdk-lib.aws_iam.CfnAccessKey</code> | An attribute that represents the iam access_key. |
@@ -349,16 +401,17 @@ The tree node.
 public readonly env: ResourceEnvironment;
 ```
 
-- *Type:* aws-cdk-lib.ResourceEnvironment
+- *Type:* aws-cdk-lib.interfaces.ResourceEnvironment
 
 The environment this resource belongs to.
 
-For resources that are created and managed by the CDK
-(generally, those created by creating new class instances like Role, Bucket, etc.),
-this is always the same as the environment of the stack they belong to;
-however, for imported resources
-(those obtained from static methods like fromRoleArn, fromBucketName, etc.),
-that might be different than the stack they were imported into.
+For resources that are created and managed in a Stack (those created by
+creating new class instances like `new Role()`, `new Bucket()`, etc.), this
+is always the same as the environment of the stack they belong to.
+
+For referenced resources (those obtained from referencing methods like
+`Role.fromRoleArn()`, `Bucket.fromBucketName()`, etc.), they might be
+different than the stack they were imported into.
 
 ---
 
@@ -434,6 +487,18 @@ An attribute that represents the user name.
 
 ---
 
+##### `userRef`<sup>Required</sup> <a name="userRef" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.userRef"></a>
+
+```typescript
+public readonly userRef: UserReference;
+```
+
+- *Type:* aws-cdk-lib.interfaces.aws_iam.UserReference
+
+A reference to a User resource.
+
+---
+
 ##### `permissionsBoundary`<sup>Optional</sup> <a name="permissionsBoundary" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.permissionsBoundary"></a>
 
 ```typescript
@@ -487,6 +552,25 @@ An attribute that represents the secret.
 
 ---
 
+#### Constants <a name="Constants" id="Constants"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.PROPERTY_INJECTION_ID">PROPERTY_INJECTION_ID</a></code> | <code>string</code> | Uniquely identifies this class. |
+
+---
+
+##### `PROPERTY_INJECTION_ID`<sup>Required</sup> <a name="PROPERTY_INJECTION_ID" id="@innovationson/cdk-iamuserwithaccesskey.IamUserWithAccessKey.property.PROPERTY_INJECTION_ID"></a>
+
+```typescript
+public readonly PROPERTY_INJECTION_ID: string;
+```
+
+- *Type:* string
+
+Uniquely identifies this class.
+
+---
 
 ## Structs <a name="Structs" id="Structs"></a>
 
