@@ -2,6 +2,14 @@ const { awscdk, javascript, github } = require('projen');
 const { YamlFile } = require('projen/lib/yaml');
 const project = new awscdk.AwsCdkConstructLibrary({
   packageManager: javascript.NodePackageManager.NPM,
+  // Explicit semver so devEngines.packageManager is valid for Dependabot (Projen omits version for npm by default)
+  devEngines: {
+    packageManager: {
+      name: 'npm',
+      version: '11.8.0',
+      onFail: 'ignore',
+    },
+  },
   author: 'Markus Ellers',
   authorAddress: 'm.ellers@inno-on.de',
   cdkVersion: '2.250.0',
@@ -53,6 +61,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   dependabot: false,
   renovatebot: false,
 });
+
+// Corepack-style field; Dependabot expects a concrete npm@semver (not only devEngines without version)
+project.package.addField('packageManager', 'npm@11.8.0');
 
 // Two release lines: Dependabot opens PRs against each branch (lockfile-only; package.json is projen-owned)
 new YamlFile(project, '.github/dependabot.yml', {
