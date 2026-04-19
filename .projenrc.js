@@ -13,7 +13,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Markus Ellers',
   authorAddress: 'm.ellers@inno-on.de',
   cdkVersion: '2.250.0',
-  minNodeVersion: '18.12.0',
+  minNodeVersion: '20.12.0',
   majorVersion: '1',
   defaultReleaseBranch: 'main',
   releaseBranches: {

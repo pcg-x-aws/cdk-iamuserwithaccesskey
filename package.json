@@ -36,7 +36,7 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^29.0.0",
-    "@types/node": "^18",
+    "@types/node": "^20",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "aws-cdk-lib": "2.250.0",
@@ -68,7 +68,7 @@
     "cdk"
   ],
   "engines": {
-    "node": ">= 18.12.0"
+    "node": ">= 20.12.0"
   },
   "devEngines": {
     "packageManager": {
