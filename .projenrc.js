@@ -27,7 +27,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   name: '@pcg-x-aws/cdk-iamuserwithaccesskey',
   description: 'Creating an IAM user with access key stored in Secrets manager',
   keywords: ['IAM', 'Access Key', 'Secretsmanager'],
-  repositoryUrl: 'git+https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git',
+  repositoryUrl: 'https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git',
   npmDistTag: 'latest',
   // Scoped packages default to restricted (private); public CDK lib must publish with access public
   npmAccess: javascript.NpmAccess.PUBLIC,

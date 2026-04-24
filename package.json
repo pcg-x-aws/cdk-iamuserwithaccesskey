@@ -3,7 +3,7 @@
   "description": "Creating an IAM user with access key stored in Secrets manager",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git"
+    "url": "https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git"
   },
   "scripts": {
     "build": "projen build",
