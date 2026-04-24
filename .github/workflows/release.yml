@@ -99,7 +99,6 @@ jobs:
         with:
           node-version: 22.14.0
           package-manager-cache: "false"
-          registry-url: https://registry.npmjs.org
       - name: Download build artifacts
         uses: actions/download-artifact@v8
         with:
@@ -128,4 +127,4 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_CONFIG_PROVENANCE: "true"
           NPM_TRUSTED_PUBLISHER: "true"
-        run: npx -p publib@latest publib-npm
+        run: npm install -g npm@^11.5.1 && npx -p publib@latest publib-npm

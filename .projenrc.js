@@ -109,13 +109,19 @@ project.package.addDevDeps(
   'jsii-diff@^1.128.0',
 );
 
-// npm OIDC: actions/setup-node should receive registry-url (npm trusted publishers docs).
-// Projen does not set it on tools.node; merge into the rendered workflow object.
+// npm OIDC trusted publishing: do NOT set setup-node `registry-url` for the npm publish job.
+// With registry-url, setup-node injects NODE_AUTH_TOKEN=github.token into GITHUB_ENV; npm then
+// sends that to registry.npmjs.org (invalid for publish) while provenance can still succeed → E404.
+// Registry is already set via NPM_REGISTRY on the publish step; id-token: write enables OIDC.
+// npm >= 11.5 is required for reliable trusted publishing (Node 22 ships npm 10.x).
 const ghForOidc = github.GitHub.of(project);
 for (const wfName of ['release', 'release-majorVersion2']) {
-  ghForOidc?.tryFindWorkflow(wfName)?.file?.addOverride(
-    'jobs.release_npm.steps.0.with.registry-url',
-    'https://registry.npmjs.org',
+  const wf = ghForOidc?.tryFindWorkflow(wfName)?.file;
+  wf?.addDeletionOverride('jobs.release_npm.steps.0.with.registry-url');
+  // Last step index is stable for projen release_npm (setup-node … Release)
+  wf?.addOverride(
+    'jobs.release_npm.steps.9.run',
+    'npm install -g npm@^11.5.1 && npx -p publib@latest publib-npm',
   );
 }
 
