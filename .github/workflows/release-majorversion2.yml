@@ -2,9 +2,6 @@
 
 name: release-majorVersion2
 on:
-  push:
-    branches:
-      - feature/majorVersion2
   workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}
@@ -127,4 +124,4 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_CONFIG_PROVENANCE: "true"
           NPM_TRUSTED_PUBLISHER: "true"
-        run: npm install -g npm@^11.5.1 && npx -p publib@latest publib-npm
+        run: npx -p publib@latest publib-npm
