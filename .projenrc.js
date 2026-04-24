@@ -13,7 +13,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Markus Ellers',
   authorAddress: 'm.ellers@inno-on.de',
   cdkVersion: '2.250.0',
-  minNodeVersion: '20.12.0',
+  // npm trusted publishing (OIDC) requires Node >= 22.14.0 per npm docs
+  minNodeVersion: '22.14.0',
   majorVersion: '1',
   defaultReleaseBranch: 'main',
   releaseBranches: {
@@ -23,11 +24,15 @@ const project = new awscdk.AwsCdkConstructLibrary({
       workflowName: 'release-majorVersion2',
     },
   },
-  name: '@innovationson/cdk-iamuserwithaccesskey',
+  name: '@pcg-x-aws/cdk-iamuserwithaccesskey',
   description: 'Creating an IAM user with access key stored in Secrets manager',
   keywords: ['IAM', 'Access Key', 'Secretsmanager'],
-  repositoryUrl: 'https://github.com/innovations-on-gmbh/cdk-iamuserwithaccesskey.git',
+  repositoryUrl: 'git+https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git',
   npmDistTag: 'latest',
+  // Scoped packages default to restricted (private); public CDK lib must publish with access public
+  npmAccess: javascript.NpmAccess.PUBLIC,
+  // Publish via GitHub OIDC (configure Trusted Publisher on npm for this repo + workflow)
+  npmTrustedPublishing: true,
   releaseToNpm: true,
   githubOptions: {
     projenCredentials: github.GithubCredentials.fromApp({
@@ -103,5 +108,15 @@ project.package.addDevDeps(
   'jsii-pacmak@^1.128.0',
   'jsii-diff@^1.128.0',
 );
+
+// npm OIDC: actions/setup-node should receive registry-url (npm trusted publishers docs).
+// Projen does not set it on tools.node; merge into the rendered workflow object.
+const ghForOidc = github.GitHub.of(project);
+for (const wfName of ['release', 'release-majorVersion2']) {
+  ghForOidc?.tryFindWorkflow(wfName)?.file?.addOverride(
+    'jobs.release_npm.steps.0.with.registry-url',
+    'https://registry.npmjs.org',
+  );
+}
 
 project.synth();

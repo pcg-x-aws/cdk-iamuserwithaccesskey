@@ -17,13 +17,13 @@ You should only use this for technical access to AWS APIs. Not for personal user
 When using projen add the following to your .projenrc:
 
 ```js
-  deps: ['@innovationson/cdk-iamuserwithaccesskey@^1.0.0'],
+  deps: ['@pcg-x-aws/cdk-iamuserwithaccesskey@^1.0.0'],
 ```
 
 ## npm Package Installation
 
 ```bash
-npm install @innovationson/cdk-iamuserwithaccesskey --save-dev
+npm install @pcg-x-aws/cdk-iamuserwithaccesskey --save-dev
 ```
 
 ### Contributing (this repository)
@@ -39,7 +39,7 @@ npm run build
 
 ```typescript
 import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { IamUserWithAccessKey } from '@innovationson/cdk-iamuserwithaccesskey';
+import { IamUserWithAccessKey } from '@pcg-x-aws/cdk-iamuserwithaccesskey';
 import { Construct } from 'constructs'
 
 export class MyStack extends Stack {
