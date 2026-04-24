@@ -5,7 +5,7 @@ import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 
 /**
- * Properties for the IAM User
+ * Properties for {@link IamUserWithAccessKey}: all {@link iam.UserProps} plus optional secret encryption.
  */
 export interface IamUserWithAccessKeyProps extends iam.UserProps {
   /**
@@ -17,9 +17,10 @@ export interface IamUserWithAccessKeyProps extends iam.UserProps {
 }
 
 /**
- * An IAM User including an Access Key that will be stored in Secrets Manager. The properties as for normal IAM Users.
+ * An IAM user with an access key whose material is stored in Secrets Manager.
+ * Extends {@link iam.User}; pass the same properties you would to `new iam.User(...)`.
  */
-export class IamUserWithAccessKey extends Construct {
+export class IamUserWithAccessKey extends iam.User {
   /**
    * An attribute that represents the iam access_key.
    *
@@ -27,37 +28,36 @@ export class IamUserWithAccessKey extends Construct {
    */
   public readonly accessKey: iam.CfnAccessKey;
   /**
-     * An attribute that represents the secret.
-     *
-     * @attribute true
-     */
+   * An attribute that represents the secret.
+   *
+   * @attribute true
+   */
   public readonly secret: sm.Secret;
 
   constructor(scope: Construct, id: string, props?: IamUserWithAccessKeyProps) {
-    super(scope, id);
-
-    const user = new iam.User(this, 'Resource', props);
+    const { encryptionKey, ...userProps } = props ?? {};
+    super(scope, id, userProps);
 
     this.accessKey = new iam.CfnAccessKey(this, 'AccessKey', {
-      userName: user.userName,
+      userName: this.userName,
     });
 
-    let UserSecretString = JSON.stringify({
+    const userSecretString = JSON.stringify({
       Access_Key_Id: this.accessKey.ref,
       Secret_Access_Key: Fn.getAtt(this.accessKey.logicalId, 'SecretAccessKey').toString(), //TODO: Check if this references the correct resource. AccessKey vs SecretAccessKey
     });
 
-    if (props?.encryptionKey) {
+    if (encryptionKey) {
       this.secret = new sm.Secret(this, 'UserSecret', {
-        encryptionKey: props.encryptionKey,
+        encryptionKey,
       });
     } else {
       this.secret = new sm.Secret(this, 'UserSecret');
-    };
+    }
 
     // We need to access the underlying cfn resource to set the secret string
     const cfnSecret = this.secret.node.defaultChild as sm.CfnSecret;
-    cfnSecret.secretString = UserSecretString;
+    cfnSecret.secretString = userSecretString;
 
     // We need a raw override because otherwise cdk always expects a secretStringGenerator object
     cfnSecret.addOverride('Properties.GenerateSecretString', Fn.ref('AWS::NoValue'));
