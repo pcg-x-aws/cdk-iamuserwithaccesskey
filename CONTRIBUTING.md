@@ -5,7 +5,7 @@ We love pull requests. Here's a quick guide.
 1. Fork, clone and branch off `main`:
 
     ```bash
-    git clone git@github.com:innovations-on-gmbh/cdk-iamuserwithaccesskey.git
+    git clone git@github.com:pcg-x-aws/cdk-iamuserwithaccesskey.git
     git checkout -b <my-branch>
     ```
 

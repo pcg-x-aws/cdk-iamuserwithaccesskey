@@ -1,9 +1,9 @@
 {
-  "name": "@innovationson/cdk-iamuserwithaccesskey",
+  "name": "@pcg-x-aws/cdk-iamuserwithaccesskey",
   "description": "Creating an IAM user with access key stored in Secrets manager",
   "repository": {
     "type": "git",
-    "url": "https://github.com/innovations-on-gmbh/cdk-iamuserwithaccesskey.git"
+    "url": "https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git"
   },
   "scripts": {
     "build": "projen build",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^29.0.0",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "aws-cdk-lib": "2.250.0",
@@ -68,7 +68,7 @@
     "cdk"
   ],
   "engines": {
-    "node": ">= 20.12.0"
+    "node": ">= 22.14.0"
   },
   "devEngines": {
     "packageManager": {
@@ -79,6 +79,9 @@
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "jest": {
     "coverageProvider": "v8",

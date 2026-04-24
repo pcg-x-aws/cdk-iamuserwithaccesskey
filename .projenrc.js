@@ -1,8 +1,11 @@
 const { awscdk, javascript, github } = require('projen');
 const { YamlFile } = require('projen/lib/yaml');
+
+const RELEASE_PUSH_BRANCHES = ['main', 'feature/majorVersion2'];
+const DEPENDABOT_BRANCHES = ['main', 'feature/majorVersion2'];
+
 const project = new awscdk.AwsCdkConstructLibrary({
   packageManager: javascript.NodePackageManager.NPM,
-  // Explicit semver so devEngines.packageManager is valid for Dependabot (Projen omits version for npm by default)
   devEngines: {
     packageManager: {
       name: 'npm',
@@ -13,21 +16,25 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'Markus Ellers',
   authorAddress: 'm.ellers@inno-on.de',
   cdkVersion: '2.250.0',
-  minNodeVersion: '20.12.0',
+  minNodeVersion: '22.14.0',
   majorVersion: '1',
   defaultReleaseBranch: 'main',
   releaseBranches: {
     'feature/majorVersion2': {
       majorVersion: '2',
-      prerelease: true,
+      // `prerelease` must be a string (e.g. alpha); boolean true becomes id "true" → tags like v2.0.0-true.0
+      prerelease: 'alpha',
+      npmDistTag: 'next',
       workflowName: 'release-majorVersion2',
     },
   },
-  name: '@innovationson/cdk-iamuserwithaccesskey',
+  name: '@pcg-x-aws/cdk-iamuserwithaccesskey',
   description: 'Creating an IAM user with access key stored in Secrets manager',
   keywords: ['IAM', 'Access Key', 'Secretsmanager'],
-  repositoryUrl: 'https://github.com/innovations-on-gmbh/cdk-iamuserwithaccesskey.git',
+  repositoryUrl: 'https://github.com/pcg-x-aws/cdk-iamuserwithaccesskey.git',
   npmDistTag: 'latest',
+  npmAccess: javascript.NpmAccess.PUBLIC,
+  npmTrustedPublishing: true,
   releaseToNpm: true,
   githubOptions: {
     projenCredentials: github.GithubCredentials.fromApp({
@@ -41,10 +48,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
     },
   },
   buildWorkflowOptions: {
-    // Use frozen lockfile install (npm ci) on PR builds; keep package-lock.json authoritative
     mutableInstall: false,
   },
-  // Jest 27 pulls vulnerable jsdom/http-proxy-agent; 29+ clears npm audit (use ^29.0 — projen pins ts-jest to same range)
   jestOptions: {
     jestVersion: '^29.0.0',
   },
@@ -56,52 +61,72 @@ const project = new awscdk.AwsCdkConstructLibrary({
     allowedUsernames: ['inno-projen[bot]', 'inno-projen', 'dependabot[bot]'],
   },
   autoApproveProjenUpgrades: true,
-  // Dependabot replaces projen upgrade workflows (mutually exclusive)
   depsUpgrade: false,
   dependabot: false,
   renovatebot: false,
 });
 
-// Corepack-style field; Dependabot expects a concrete npm@semver (not only devEngines without version)
 project.package.addField('packageManager', 'npm@11.8.0');
 
-// Two release lines: Dependabot opens PRs against each branch (lockfile-only; package.json is projen-owned)
 new YamlFile(project, '.github/dependabot.yml', {
   committed: true,
   obj: {
     version: 2,
-    updates: [
-      {
-        'package-ecosystem': 'npm',
-        'directory': '/',
-        'versioning-strategy': 'lockfile-only',
-        'schedule': { interval: 'weekly' },
-        'target-branch': 'main',
-        'labels': ['auto-approve'],
-        'open-pull-requests-limit': 5,
-        'ignore': [{ 'dependency-name': 'projen' }],
-      },
-      {
-        'package-ecosystem': 'npm',
-        'directory': '/',
-        'versioning-strategy': 'lockfile-only',
-        'schedule': { interval: 'weekly' },
-        'target-branch': 'feature/majorVersion2',
-        'labels': ['auto-approve'],
-        'open-pull-requests-limit': 5,
-        'ignore': [{ 'dependency-name': 'projen' }],
-      },
-    ],
+    updates: DEPENDABOT_BRANCHES.map((targetBranch) => ({
+      'package-ecosystem': 'npm',
+      'directory': '/',
+      'versioning-strategy': 'lockfile-only',
+      'schedule': { interval: 'weekly' },
+      'target-branch': targetBranch,
+      'labels': ['auto-approve'],
+      'open-pull-requests-limit': 5,
+      'ignore': [{ 'dependency-name': 'projen' }],
+    })),
   },
 });
 
-// Newer versions satisfy npm peer resolution (eslint 9, jsii-rosetta ~5.9)
 project.package.addDevDeps(
   'eslint-plugin-import@^2.32.0',
   'eslint-import-resolver-typescript@^4.4.4',
   'jsii-docgen@^10.11.16',
   'jsii-pacmak@^1.128.0',
   'jsii-diff@^1.128.0',
+);
+
+const gh = github.GitHub.of(project);
+
+// One workflow file for npm Trusted Publishing: push for both lines runs `release.yml` only.
+const releaseWf = gh?.tryFindWorkflow('release')?.file;
+releaseWf?.addOverride('on.push.branches', RELEASE_PUSH_BRANCHES);
+releaseWf?.addOverride(
+  'jobs.release.steps.4.run',
+  [
+    'set -euo pipefail',
+    'if [ "${GITHUB_REF}" = "refs/heads/main" ]; then',
+    '  npx projen release',
+    'elif [ "${GITHUB_REF}" = "refs/heads/feature/majorVersion2" ]; then',
+    '  npx projen release:feature/majorVersion2',
+    'else',
+    '  echo "Unexpected ref: ${GITHUB_REF}" >&2',
+    '  exit 1',
+    'fi',
+  ].join('\n'),
+);
+
+// Projen still emits this workflow for the v2 line; disable push so it does not compete with `release.yml`.
+gh?.tryFindWorkflow('release-majorVersion2')?.file?.addDeletionOverride('on.push');
+
+// npm OIDC: never use setup-node registry-url (injects NODE_AUTH_TOKEN=github.token → E404 on publish).
+// npm >= 11.5 for trusted publishing; Node 22 still ships npm 10.x.
+releaseWf?.addDeletionOverride('jobs.release_npm.steps.0.with.registry-url');
+releaseWf?.addOverride(
+  'jobs.release_npm.steps.9.run',
+  'npm install -g npm@^11.5.1 && npx -p publib@latest publib-npm',
+);
+// Unified workflow: default branch job still had NPM_DIST_TAG=latest; v2 line uses `next` from releaseBranches.
+releaseWf?.addOverride(
+  'jobs.release_npm.steps.9.env.NPM_DIST_TAG',
+  "${{ github.ref == 'refs/heads/feature/majorVersion2' && 'next' || 'latest' }}",
 );
 
 project.synth();
