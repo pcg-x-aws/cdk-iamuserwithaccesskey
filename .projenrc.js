@@ -22,7 +22,9 @@ const project = new awscdk.AwsCdkConstructLibrary({
   releaseBranches: {
     'feature/majorVersion2': {
       majorVersion: '2',
-      prerelease: true,
+      // `prerelease` must be a string (e.g. alpha); boolean true becomes id "true" → tags like v2.0.0-true.0
+      prerelease: 'alpha',
+      npmDistTag: 'next',
       workflowName: 'release-majorVersion2',
     },
   },
@@ -72,13 +74,13 @@ new YamlFile(project, '.github/dependabot.yml', {
     version: 2,
     updates: DEPENDABOT_BRANCHES.map((targetBranch) => ({
       'package-ecosystem': 'npm',
-      directory: '/',
+      'directory': '/',
       'versioning-strategy': 'lockfile-only',
-      schedule: { interval: 'weekly' },
+      'schedule': { interval: 'weekly' },
       'target-branch': targetBranch,
-      labels: ['auto-approve'],
+      'labels': ['auto-approve'],
       'open-pull-requests-limit': 5,
-      ignore: [{ 'dependency-name': 'projen' }],
+      'ignore': [{ 'dependency-name': 'projen' }],
     })),
   },
 });
@@ -120,6 +122,11 @@ releaseWf?.addDeletionOverride('jobs.release_npm.steps.0.with.registry-url');
 releaseWf?.addOverride(
   'jobs.release_npm.steps.9.run',
   'npm install -g npm@^11.5.1 && npx -p publib@latest publib-npm',
+);
+// Unified workflow: default branch job still had NPM_DIST_TAG=latest; v2 line uses `next` from releaseBranches.
+releaseWf?.addOverride(
+  'jobs.release_npm.steps.9.env.NPM_DIST_TAG',
+  "${{ github.ref == 'refs/heads/feature/majorVersion2' && 'next' || 'latest' }}",
 );
 
 project.synth();

@@ -230,7 +230,7 @@
       "env": {
         "RELEASE": "true",
         "MAJOR": "2",
-        "PRERELEASE": "true"
+        "PRERELEASE": "alpha"
       },
       "steps": [
         {

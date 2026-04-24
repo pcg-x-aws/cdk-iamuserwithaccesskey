@@ -133,7 +133,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Release
         env:
-          NPM_DIST_TAG: latest
+          NPM_DIST_TAG: ${{ github.ref == 'refs/heads/feature/majorVersion2' && 'next' || 'latest' }}
           NPM_REGISTRY: registry.npmjs.org
           NPM_CONFIG_PROVENANCE: "true"
           NPM_TRUSTED_PUBLISHER: "true"
