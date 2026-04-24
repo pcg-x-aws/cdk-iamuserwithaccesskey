@@ -1,13 +1,13 @@
 // import { expect, countResources } from '@aws-cdk/assert';
-import { Stack } from 'aws-cdk-lib';
+import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { IamUserWithAccessKey } from '../src';
 
 
 describe('User', () => {
   test('Template has the correct resources', () => {
-    let stack: Stack;
-    stack = new Stack();
+    const app = new App();
+    const stack = new Stack(app, 'TestStack');
     new IamUserWithAccessKey(stack, 'User', {
       // secretName: 'IamUserWithAccessKeySecret',
       userName: 'iamUserWithAccessKeyUsername',

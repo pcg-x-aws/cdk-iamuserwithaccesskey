@@ -5,7 +5,7 @@ exports[`User Template has the correct resources 1`] = `
   "Outputs": {
     "UserSecretArn35117ED6": {
       "Export": {
-        "Name": "User",
+        "Name": "TestStackUserECBCD3AD",
       },
       "Value": {
         "Ref": "UserUserSecret4251AFB1",

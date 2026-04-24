@@ -1,4 +1,4 @@
-import { Fn, CfnOutput } from 'aws-cdk-lib';
+import { CfnOutput, Fn, Names } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
@@ -64,7 +64,8 @@ export class IamUserWithAccessKey extends Construct {
 
     new CfnOutput(this, 'SecretArn', {
       value: this.secret.secretArn.toString(),
-      exportName: `${id}`,
+      // Construct id alone collides across stacks; uniqueId is stable per construct path.
+      exportName: Names.uniqueId(this),
     });
   }
 }
